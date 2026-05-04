@@ -83,7 +83,7 @@ class KlassUsecaseTest {
         when(klassService.findAll())
                 .thenReturn(List.of(klass(KlassStatus.DRAFT), klass(KlassStatus.OPEN)));
 
-        final List<KlassResult> result = klassUsecase.findAll();
+        final List<KlassResult> result = klassUsecase.findAll(null);
 
         assertThat(result).hasSize(2);
         assertThat(result.get(0).status()).isEqualTo(KlassStatus.DRAFT);
@@ -95,7 +95,7 @@ class KlassUsecaseTest {
         when(klassService.findAllByStatus(KlassStatus.OPEN))
                 .thenReturn(List.of(klass(KlassStatus.OPEN)));
 
-        final List<KlassResult> result = klassUsecase.findAllByStatus(KlassStatus.OPEN);
+        final List<KlassResult> result = klassUsecase.findAll(KlassStatus.OPEN);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).status()).isEqualTo(KlassStatus.OPEN);

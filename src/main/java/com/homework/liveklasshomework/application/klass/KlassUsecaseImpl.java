@@ -8,6 +8,7 @@ import com.homework.liveklasshomework.application.klass.dto.KlassStatusUpdateCom
 import com.homework.liveklasshomework.domain.Klass;
 import com.homework.liveklasshomework.domain.KlassStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,19 +35,13 @@ public class KlassUsecaseImpl implements KlassUsecase {
     }
 
     @Override
-    public List<KlassResult> findAll() {
-        return klassService.findAll()
-                .stream()
-                .map(KlassResult::from)
-                .toList();
-    }
-
-    @Override
-    public List<KlassResult> findAllByStatus(
-            final KlassStatus status
+    public List<KlassResult> findAll(
+            @Nullable final KlassStatus status
     ) {
-        return klassService.findAllByStatus(status)
-                .stream()
+        final List<Klass> klasses = status == null
+                ? klassService.findAll()
+                : klassService.findAllByStatus(status);
+        return klasses.stream()
                 .map(KlassResult::from)
                 .toList();
     }
