@@ -35,7 +35,8 @@ public class KlassUsecaseImpl implements KlassUsecase {
 
     @Override
     public List<KlassResult> findAll() {
-        return klassService.findAll().stream()
+        return klassService.findAll()
+                .stream()
                 .map(KlassResult::from)
                 .toList();
     }
@@ -44,7 +45,8 @@ public class KlassUsecaseImpl implements KlassUsecase {
     public List<KlassResult> findAllByStatus(
             final KlassStatus status
     ) {
-        return klassService.findAllByStatus(status).stream()
+        return klassService.findAllByStatus(status)
+                .stream()
                 .map(KlassResult::from)
                 .toList();
     }

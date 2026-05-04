@@ -98,6 +98,7 @@ public class KlassServiceImpl implements KlassService {
         if (current == KlassStatus.DRAFT && target == KlassStatus.OPEN) return;
         if (current == KlassStatus.OPEN && target == KlassStatus.CLOSED) return;
         throw new InvalidStatusTransitionException(
-                String.format("'%s' → '%s' 상태 전이는 허용되지 않습니다.", current, target));
+                String.format("'%s' → '%s' 상태 전이는 허용되지 않습니다.", current, target)
+        );
     }
 }
