@@ -7,13 +7,14 @@ import com.homework.liveklasshomework.application.exception.ForbiddenException;
 import com.homework.liveklasshomework.application.exception.InvalidStatusTransitionException;
 import com.homework.liveklasshomework.application.exception.KlassClosedException;
 import com.homework.liveklasshomework.application.exception.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.stream.Collectors;
 
@@ -76,6 +77,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CommonResponseDto.ErrorResponseDto handleMissingHeader(
             final MissingRequestHeaderException e
+    ) {
+        return CommonResponseDto.ErrorResponseDto.of(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResponseDto.ErrorResponseDto handleTypeMismatch(
+            final MethodArgumentTypeMismatchException e
     ) {
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST,
