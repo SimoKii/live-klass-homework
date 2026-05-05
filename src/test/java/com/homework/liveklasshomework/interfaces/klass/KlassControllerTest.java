@@ -77,7 +77,7 @@ class KlassControllerTest {
     }
 
     @Test
-    void X_User_Id_헤더_누락_시_예외_발생() throws Exception {
+    void 강의_생성_시_X_User_Id_헤더_누락_시_예외_발생() throws Exception {
         final CreateKlassRequest request = new CreateKlassRequest(
                 "Java 입문",
                 "설명",
@@ -94,7 +94,7 @@ class KlassControllerTest {
     }
 
     @Test
-    void 제목이_빈_값이면_예외_발생() throws Exception {
+    void 강의_생성_시_제목이_빈_값이면_예외_발생() throws Exception {
         final CreateKlassRequest request = new CreateKlassRequest(
                 "",
                 "설명",
@@ -112,7 +112,7 @@ class KlassControllerTest {
     }
 
     @Test
-    void 가격이_음수이면_예외_발생() throws Exception {
+    void 강의_생성_시_가격이_음수이면_예외_발생() throws Exception {
         final CreateKlassRequest request = new CreateKlassRequest(
                 "Java 입문",
                 "설명",
@@ -130,7 +130,7 @@ class KlassControllerTest {
     }
 
     @Test
-    void 최대_수강_인원이_0_이하이면_예외_발생() throws Exception {
+    void 강의_생성_시_최대_수강_인원이_0_이하이면_예외_발생() throws Exception {
         final CreateKlassRequest request = new CreateKlassRequest(
                 "Java 입문",
                 "설명",
@@ -148,7 +148,7 @@ class KlassControllerTest {
     }
 
     @Test
-    void 시작일이_종료일_이후이면_예외_발생() throws Exception {
+    void 강의_생성_시_시작일이_종료일_이후이면_예외_발생() throws Exception {
         final CreateKlassRequest request = new CreateKlassRequest(
                 "Java 입문",
                 "설명",
@@ -166,7 +166,7 @@ class KlassControllerTest {
     }
 
     @Test
-    void 존재하지_않는_강의_조회_시_예외_발생() throws Exception {
+    void 존재하지_않는_강의_상세_조회_시_예외_발생() throws Exception {
         when(klassUsecase.findById(999L))
                 .thenThrow(new ResourceNotFoundException("강의를 찾을 수 없습니다."));
 

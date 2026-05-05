@@ -102,7 +102,7 @@ class KlassUsecaseTest {
     }
 
     @Test
-    void 강의_상세_조회_시_CANCELLED_제외_수강_인원_포함_KlassDetailResult_반환() {
+    void 강의_상세_조회_시_취소_제외_수강_인원_포함_KlassDetailResult_반환() {
         when(klassService.findById(1L)).thenReturn(klass(KlassStatus.OPEN));
         when(enrollmentService.countNonCancelledEnrollments(1L)).thenReturn(5L);
 
