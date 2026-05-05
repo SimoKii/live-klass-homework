@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -108,6 +109,17 @@ public class GlobalExceptionHandler {
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST,
                 message
+        );
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public CommonResponseDto.ErrorResponseDto handleNoResourceFound(
+            final NoResourceFoundException e
+    ) {
+        return CommonResponseDto.ErrorResponseDto.of(
+                HttpStatus.NOT_FOUND,
+                e.getMessage()
         );
     }
 
