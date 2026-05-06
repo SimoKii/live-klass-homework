@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
     ) {
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST,
-                e.getMessage()
+                "'" + e.getHeaderName() + "' 헤더가 누락되었습니다."
         );
     }
 
@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
     ) {
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST,
-                e.getMessage()
+                "'" + e.getName() + "'의 값이 올바르지 않습니다."
         );
     }
 
@@ -104,7 +104,7 @@ public class GlobalExceptionHandler {
             final ConstraintViolationException e
     ) {
         final String message = e.getConstraintViolations().stream()
-                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .map(v -> v.getMessage())
                 .collect(java.util.stream.Collectors.joining(", "));
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST,
@@ -157,7 +157,7 @@ public class GlobalExceptionHandler {
     ) {
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.NOT_FOUND,
-                e.getMessage()
+                "요청한 경로를 찾을 수 없습니다."
         );
     }
 
@@ -169,7 +169,7 @@ public class GlobalExceptionHandler {
         log.error("Unexpected exception", e);
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Internal server error"
+                "서버 내부 오류가 발생했습니다."
         );
     }
 }

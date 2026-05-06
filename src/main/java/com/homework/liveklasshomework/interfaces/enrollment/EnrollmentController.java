@@ -30,7 +30,7 @@ public class EnrollmentController {
     @ResponseStatus(HttpStatus.CREATED)
     public CommonResponseDto.SuccessResponseDto<EnrollmentResponse> enroll(
             @PathVariable final Long classId,
-            @Positive @RequestHeader("X-User-Id") final Long userId
+            @Positive(message = "X-User-Id는 양수여야 합니다.") @RequestHeader("X-User-Id") final Long userId
     ) {
         return CommonResponseDto.SuccessResponseDto.success(
                 EnrollmentResponse.from(enrollmentUsecase.enroll(new EnrollmentCreateCommand(classId, userId)))
@@ -40,7 +40,7 @@ public class EnrollmentController {
     @PatchMapping("/api/v1/enrollments/{enrollmentId}/confirm")
     public CommonResponseDto.SuccessResponseDto<EnrollmentResponse> confirm(
             @PathVariable final Long enrollmentId,
-            @Positive @RequestHeader("X-User-Id") final Long userId
+            @Positive(message = "X-User-Id는 양수여야 합니다.") @RequestHeader("X-User-Id") final Long userId
     ) {
         return CommonResponseDto.SuccessResponseDto.success(
                 EnrollmentResponse.from(enrollmentUsecase.confirm(new EnrollmentActionCommand(enrollmentId, userId)))
@@ -50,7 +50,7 @@ public class EnrollmentController {
     @PatchMapping("/api/v1/enrollments/{enrollmentId}/cancel")
     public CommonResponseDto.SuccessResponseDto<EnrollmentResponse> cancel(
             @PathVariable final Long enrollmentId,
-            @Positive @RequestHeader("X-User-Id") final Long userId
+            @Positive(message = "X-User-Id는 양수여야 합니다.") @RequestHeader("X-User-Id") final Long userId
     ) {
         return CommonResponseDto.SuccessResponseDto.success(
                 EnrollmentResponse.from(enrollmentUsecase.cancel(new EnrollmentActionCommand(enrollmentId, userId)))
@@ -59,7 +59,7 @@ public class EnrollmentController {
 
     @GetMapping("/api/v1/enrollments/me")
     public CommonResponseDto.SuccessResponseDto<Page<EnrollmentResponse>> findMyEnrollments(
-            @Positive @RequestHeader("X-User-Id") final Long userId,
+            @Positive(message = "X-User-Id는 양수여야 합니다.") @RequestHeader("X-User-Id") final Long userId,
             final Pageable pageable
     ) {
         return CommonResponseDto.SuccessResponseDto.success(

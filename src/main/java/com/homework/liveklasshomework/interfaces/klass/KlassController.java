@@ -37,7 +37,7 @@ public class KlassController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CommonResponseDto.SuccessResponseDto<KlassResponse> createKlass(
-            @Positive @RequestHeader("X-User-Id") final Long userId,
+            @Positive(message = "X-User-Id는 양수여야 합니다.") @RequestHeader("X-User-Id") final Long userId,
             @Valid @RequestBody final CreateKlassRequest request
     ) {
         return CommonResponseDto.SuccessResponseDto.success(
@@ -49,7 +49,7 @@ public class KlassController {
     @ResponseStatus(HttpStatus.OK)
     public CommonResponseDto.SuccessResponseDto<KlassResponse> updateStatus(
             @PathVariable final Long classId,
-            @Positive @RequestHeader("X-User-Id") final Long userId,
+            @Positive(message = "X-User-Id는 양수여야 합니다.") @RequestHeader("X-User-Id") final Long userId,
             @Valid @RequestBody final UpdateKlassStatusRequest request
     ) {
         return CommonResponseDto.SuccessResponseDto.success(
