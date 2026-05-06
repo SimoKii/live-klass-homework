@@ -6,14 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
 public record CreateKlassRequest(
         @NotBlank(message = "title must not be blank")
+        @Size(max = 255, message = "title must not exceed 255 characters")
         String title,
 
         @NotBlank(message = "description must not be blank")
+        @Size(max = 255, message = "description must not exceed 255 characters")
         String description,
 
         @NotNull(message = "price must not be null")

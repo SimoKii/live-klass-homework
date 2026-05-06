@@ -9,6 +9,7 @@ import com.homework.liveklasshomework.application.exception.KlassClosedException
 import com.homework.liveklasshomework.application.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -93,6 +94,17 @@ public class GlobalExceptionHandler {
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST,
                 e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResponseDto.ErrorResponseDto handleHttpMessageNotReadable(
+            final HttpMessageNotReadableException e
+    ) {
+        return CommonResponseDto.ErrorResponseDto.of(
+                HttpStatus.BAD_REQUEST,
+                "읽을 수 없는 요청입니다."
         );
     }
 
