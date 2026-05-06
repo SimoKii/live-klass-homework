@@ -7,6 +7,7 @@ import com.homework.liveklasshomework.application.exception.ForbiddenException;
 import com.homework.liveklasshomework.application.exception.InvalidStatusTransitionException;
 import com.homework.liveklasshomework.application.exception.KlassClosedException;
 import com.homework.liveklasshomework.application.exception.ResourceNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -97,6 +98,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResponseDto.ErrorResponseDto handleConstraintViolation(
+            final ConstraintViolationException e
+    ) {
+        final String message = e.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .collect(java.util.stream.Collectors.joining(", "));
+        return CommonResponseDto.ErrorResponseDto.of(
+                HttpStatus.BAD_REQUEST,
+                message
+        );
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CommonResponseDto.ErrorResponseDto handleHttpMessageNotReadable(
@@ -105,6 +120,17 @@ public class GlobalExceptionHandler {
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST,
                 "읽을 수 없는 요청입니다."
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CommonResponseDto.ErrorResponseDto handleIllegalArgument(
+            final IllegalArgumentException e
+    ) {
+        return CommonResponseDto.ErrorResponseDto.of(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
         );
     }
 

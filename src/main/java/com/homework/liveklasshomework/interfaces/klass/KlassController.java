@@ -9,7 +9,9 @@ import com.homework.liveklasshomework.interfaces.klass.dto.KlassResponse;
 import com.homework.liveklasshomework.interfaces.klass.dto.UpdateKlassStatusRequest;
 import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/classes")
 @RequiredArgsConstructor
@@ -34,7 +37,7 @@ public class KlassController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CommonResponseDto.SuccessResponseDto<KlassResponse> createKlass(
-            @RequestHeader("X-User-Id") final Long userId,
+            @Positive @RequestHeader("X-User-Id") final Long userId,
             @Valid @RequestBody final CreateKlassRequest request
     ) {
         return CommonResponseDto.SuccessResponseDto.success(
@@ -46,7 +49,7 @@ public class KlassController {
     @ResponseStatus(HttpStatus.OK)
     public CommonResponseDto.SuccessResponseDto<KlassResponse> updateStatus(
             @PathVariable final Long classId,
-            @RequestHeader("X-User-Id") final Long userId,
+            @Positive @RequestHeader("X-User-Id") final Long userId,
             @Valid @RequestBody final UpdateKlassStatusRequest request
     ) {
         return CommonResponseDto.SuccessResponseDto.success(
