@@ -10,8 +10,8 @@ public record Enrollment(
         LocalDateTime confirmedAt
 ) {
     public Enrollment {
-        if (klassId == null) throw new IllegalArgumentException("'klassId' must not be null");
-        if (userId == null) throw new IllegalArgumentException("'userId' must not be null");
-        if (status == null) throw new IllegalArgumentException("'status' must not be null");
+        assert klassId != null : "'klassId' must not be null";
+        assert userId != null : "'userId' must not be null";
+        assert status != null : "'status' must not be null";
     }
 }
