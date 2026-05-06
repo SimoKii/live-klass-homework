@@ -24,16 +24,14 @@ public class KlassServiceImpl implements KlassService {
     public Klass create(
             final KlassCreateCommand command
     ) {
-        final Klass klass = new Klass(
-                null,
+        final Klass klass = Klass.createDraft(
                 command.creatorId(),
                 command.title(),
                 command.description(),
                 command.price(),
                 command.maxCapacity(),
                 command.startDate(),
-                command.endDate(),
-                KlassStatus.DRAFT
+                command.endDate()
         );
 
         return klassRepository.save(klass);
@@ -53,17 +51,7 @@ public class KlassServiceImpl implements KlassService {
 
         validateKlassStatusTransition(klass.status(), command.targetStatus());
 
-        final Klass updated = new Klass(
-                klass.id(),
-                klass.creatorId(),
-                klass.title(),
-                klass.description(),
-                klass.price(),
-                klass.maxCapacity(),
-                klass.startDate(),
-                klass.endDate(),
-                command.targetStatus()
-        );
+        final Klass updated = klass.withStatus(command.targetStatus());
 
         return klassRepository.save(updated);
     }

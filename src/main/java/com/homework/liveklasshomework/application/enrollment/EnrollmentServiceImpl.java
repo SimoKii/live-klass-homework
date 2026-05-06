@@ -62,14 +62,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             throw new EnrollmentCapacityExceededException();
         }
 
-        final Enrollment enrollment = new Enrollment(
-                null,
-                command.klassId(),
-                command.userId(),
-                EnrollmentStatus.PENDING,
-                null
-        );
-        return enrollmentRepository.save(enrollment);
+        return enrollmentRepository.save(Enrollment.pending(command.klassId(), command.userId()));
     }
 
     @Override
@@ -90,15 +83,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             throw new InvalidStatusTransitionException("이미 확정된 신청입니다.");
         }
 
-        return enrollmentRepository.save(
-                new Enrollment(
-                        enrollment.id(),
-                        enrollment.klassId(),
-                        enrollment.userId(),
-                        EnrollmentStatus.CONFIRMED,
-                        LocalDateTime.now()
-                )
-        );
+        return enrollmentRepository.save(enrollment.confirm());
     }
 
     @Override
@@ -121,15 +106,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             }
         }
 
-        return enrollmentRepository.save(
-                new Enrollment(
-                        enrollment.id(),
-                        enrollment.klassId(),
-                        enrollment.userId(),
-                        EnrollmentStatus.CANCELLED,
-                        enrollment.confirmedAt()
-                )
-        );
+        return enrollmentRepository.save(enrollment.cancel());
     }
 
     @Override

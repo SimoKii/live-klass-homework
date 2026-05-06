@@ -26,4 +26,42 @@ public record Klass(
         assert !startDate.isAfter(endDate) : "'startDate' must not be after 'endDate'";
         assert status != null : "'status' must not be null";
     }
+
+    public static Klass createDraft(
+            final Long creatorId,
+            final String title,
+            final String description,
+            final Long price,
+            final int maxCapacity,
+            final LocalDate startDate,
+            final LocalDate endDate
+    ) {
+        return new Klass(
+                null,
+                creatorId,
+                title,
+                description,
+                price,
+                maxCapacity,
+                startDate,
+                endDate,
+                KlassStatus.DRAFT
+        );
+    }
+
+    public Klass withStatus(
+            final KlassStatus newStatus
+    ) {
+        return new Klass(
+                id,
+                creatorId,
+                title,
+                description,
+                price,
+                maxCapacity,
+                startDate,
+                endDate,
+                newStatus
+        );
+    }
 }
