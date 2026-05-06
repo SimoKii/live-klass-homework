@@ -288,6 +288,64 @@ class KlassControllerTest {
     }
 
     @Test
+    void 강의_생성_시_제목이_255자_초과이면_예외_발생() throws Exception {
+        final String longTitle = "a".repeat(256);
+
+        mockMvc.perform(post("/api/v1/classes")
+                        .header("X-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "%s",
+                                  "description": "설명",
+                                  "price": 50000,
+                                  "maxCapacity": 30,
+                                  "startDate": "2026-06-01",
+                                  "endDate": "2026-06-30"
+                                }
+                                """.formatted(longTitle)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 강의_생성_시_설명이_255자_초과이면_예외_발생() throws Exception {
+        final String longDescription = "a".repeat(256);
+
+        mockMvc.perform(post("/api/v1/classes")
+                        .header("X-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "Java 입문",
+                                  "description": "%s",
+                                  "price": 50000,
+                                  "maxCapacity": 30,
+                                  "startDate": "2026-06-01",
+                                  "endDate": "2026-06-30"
+                                }
+                                """.formatted(longDescription)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 강의_생성_시_가격에_문자열_입력_시_예외_발생() throws Exception {
+        mockMvc.perform(post("/api/v1/classes")
+                        .header("X-User-Id", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "Java 입문",
+                                  "description": "설명",
+                                  "price": "잘못된값",
+                                  "maxCapacity": 30,
+                                  "startDate": "2026-06-01",
+                                  "endDate": "2026-06-30"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void 강의_상세_조회_성공() throws Exception {
         final KlassDetailResult detail = new KlassDetailResult(
                 1L,
