@@ -142,7 +142,7 @@ public class GlobalExceptionHandler {
         final String message = e.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                .map(fe -> fe.getField() + fe.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         return CommonResponseDto.ErrorResponseDto.of(
                 HttpStatus.BAD_REQUEST,
