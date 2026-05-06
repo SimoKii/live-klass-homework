@@ -10,10 +10,7 @@
 | Framework | Spring Boot 4.0.6 |
 | ORM | Spring Data JPA (Hibernate 7.2) |
 | DB | H2 (`MODE=MySQL`) |
-| Validation | Spring Boot Validation (Jakarta Bean Validation) |
-| Boilerplate | Lombok |
-| Test | JUnit 5, Mockito, MockMvc, AssertJ |
-| Build | Gradle |
+| Test | JUnit 5 |
 
 ## 실행 방법
 
@@ -34,16 +31,6 @@
 
 > VS Code 사용자는 [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) 확장으로 동일하게 사용할 수 있습니다.
 
-### H2 콘솔
-
-`http://localhost:8080/h2-console`
-
-```
-JDBC URL : jdbc:h2:mem:live-klass
-Username : heeeun
-Password : (없음)
-```
-
 ---
 
 ## API 목록 및 예시
@@ -61,8 +48,8 @@ Password : (없음)
 
 ```json
 {
-  "code": 400,
-  "message": "오류 설명"
+  "code": "{httpStatusCode}",
+  "message": "{Exception Message}"
 }
 ```
 
@@ -112,7 +99,7 @@ Content-Type: application/json
 ```json
 {
   "code": 400,
-  "message": "title: title must not be blank"
+  "message": "title must not be blank"
 }
 ```
 
@@ -172,7 +159,7 @@ Content-Type: application/json
 ```json
 {
   "code": 400,
-  "message": "status: status must not be null"
+  "message": "status must not be null"
 }
 ```
 
@@ -244,7 +231,7 @@ GET /api/v1/classes?status=OPEN
 
 ### 강의 상세 조회
 
-- `currentEnrollmentCount`는 `CANCELLED`를 제외한 활성 신청 수(PENDING + CONFIRMED)입니다.
+- `currentEnrollmentCount`는 `CANCELLED`를 제외한 활성 신청 수(`PENDING` + `CONFIRMED`)입니다.
 
 **요청**
 ```http
@@ -625,7 +612,7 @@ erDiagram
 
 ### 가정
 
-- **인증 없이 `X-User-Id` 헤더를 신뢰합니다.** 실제 인증 시스템이 없으므로 헤더에 담긴 값을 요청자 식별자로 사용합니다. 단, 음수·0 값은 유효하지 않은 식별자로 보고 400을 반환합니다.
+- **인증 없이 `X-User-Id` 헤더를 신뢰합니다.** 실제 인증 시스템이 없으므로 헤더에 담긴 값을 요청자 식별자로 사용합니다. 단, 음수·0 값은 유효하지 않은 식별자 또는 서버 내에서 관리중이지 않은 유저의 경우 400을 반환합니다.
 - **취소 후 재신청이 가능합니다.** 요구사항에 명시적인 금지 조항이 없으므로, `CANCELLED` 상태 신청이 있어도 신규 신청을 허용합니다.
 - **`confirmedAt`은 서버 시각 기준**으로 기록합니다. 클라이언트 시각을 신뢰하지 않으며, 취소 기간(7일) 계산도 서버 시각을 기준으로 합니다.
 - **`confirmedAt`은 취소 후에도 유지됩니다.** 결제 확정 이력은 취소 이후에도 보존해야 한다고 판단했습니다. 취소 시 `confirmedAt`을 null로 덮어쓰지 않으며, 응답에도 원래 값을 그대로 반환합니다.
@@ -638,7 +625,7 @@ erDiagram
 
 `interfaces → application → domain ← infrastructure` 방향으로 의존성을 제어했습니다.
 
-**도메인의 순수성**: `Klass`와 `Enrollment`는 JPA, Spring, Jakarta EE 어노테이션 없이 순수 Java Record로 작성했습니다. 이 덕분에 도메인 객체를 `new Klass(...)`, `new Enrollment(...)`처럼 평범한 생성자 호출로 직접 만들 수 있어, Spring 컨텍스트나 DB 연결 없이 도메인 불변 조건을 단위 테스트로 검증할 수 있습니다. 또한 코드를 읽을 때 `@Entity`, `@Column` 같은 기술 어노테이션이 비즈니스 규칙을 가리지 않아 도메인 로직이 그대로 드러납니다.
+**도메인의 순수성(POJO)**: `Klass`와 `Enrollment`는 JPA, Spring, Jakarta EE 어노테이션 없이 순수 Java Record로 작성했습니다. 이 덕분에 도메인 객체를 `new Klass(...)`, `new Enrollment(...)`처럼 평범한 생성자 호출로 직접 만들 수 있어, Spring 컨텍스트나 DB 연결 없이 도메인 불변 조건을 단위 테스트로 검증할 수 있습니다. 또한 코드를 읽을 때 `@Entity`, `@Column` 같은 기술 어노테이션이 비즈니스 규칙을 가리지 않아 도메인 로직이 그대로 드러납니다.
 
 **의존성 역전**: `application` 계층이 `KlassRepository`, `EnrollmentRepository` 인터페이스를 직접 정의하고 `infrastructure` 계층이 이를 구현합니다. 서비스 코드는 JPA의 존재를 알지 못하며, JPA가 서비스에 의존하는 방향입니다. 인프라 구현체를 교체해도 비즈니스 로직은 수정이 불필요합니다.
 
@@ -654,7 +641,7 @@ Record의 모든 필드는 `final`로 선언되어 생성 이후 외부에서 �
 
 ### 비관적 락(Pessimistic Lock)
 
-수강 신청은 **"정원 확인 → 신청 생성"** 두 단계로 이루어집니다. 동시 요청 시 두 스레드가 모두 여석이 있다고 판단하고 초과 신청을 생성하는 TOCTOU(Time-Of-Check-Time-Of-Use) 문제가 발생할 수 있습니다.
+수강 신청은 **"정원 확인 → 신청 생성"** 두 단계로 이루어집니다. 동시 요청 시 두 스레드가 모두 여석이 있다고 판단하고 초과 신청이 발생되는 동시성 문제가 발생할 수 있습니다.
 
 **낙관적 락을 선택하지 않은 이유:** 낙관적 락(버전 필드)을 `Klass`에 적용하면, 수강 신청이 발생할 때마다 강의 버전이 충돌합니다. 신청자가 많을수록 재시도 횟수가 폭발적으로 증가해 처리량이 저하됩니다.
 
@@ -697,29 +684,24 @@ H2 `MODE=MySQL`에서 `PESSIMISTIC_WRITE`가 실제로 블로킹되는지는, ma
 
 ---
 
-## 미구현 / 제약사항
+## 이 과제에서 더 추가한다면
 
-### 미구현 기능
-
-#### 대기열(Waitlist)
+### 대기열(Waitlist)
 
 구현 시 `WaitlistEntry` 도메인을 추가하고, 강의가 `CLOSED`로 전환되거나 수강 취소가 발생할 때 대기자에게 신청 기회를 부여하는 이벤트 처리가 필요합니다.
+현재 구조는 단일 인스턴스 구조이기에, 별도의 크리티컬 섹션을 통해 대기열을 두는 걸 생각했습니다.
+비록 시간이 부족해 구현은 못했지만 만약 하게된다면 서버 내부에 `ConcurrentHashMap` 등을 통해 대기열을 생성해 대기열을 구현해 보다 안정적인 강의신청 대기열 구축을 진행할 수 있을 것 같습니다.
 
-#### 강의별 수강생 목록 조회 (크리에이터 전용)
+### 강의별 수강생 목록 조회 (크리에이터 전용)
 
 `EnrollmentRepository`에 `findByKlassId(klassId, pageable)`를 추가하고, 요청자가 해당 강의의 `creatorId`와 일치하는지 검증하는 서비스 로직이 필요합니다.
-
-### 제약사항
-
-- **인증/인가 없음:** `X-User-Id` 헤더 값을 그대로 신뢰합니다. 실제 서비스라면 JWT 등 인증 레이어가 필요합니다.
-- **인메모리 DB:** H2를 사용하므로 애플리케이션 재시작 시 데이터가 초기화됩니다. 영속성이 필요한 경우 MySQL 등으로 교체가 필요합니다.
-- **트랜잭션 격리 수준:** H2 기본값은 `READ_COMMITTED`입니다. 운영 환경 MySQL의 기본값(`REPEATABLE_READ`)과 차이가 있을 수 있습니다.
+만약 하게된다면 Page API 하나를 만들것 같습니다. 이때 페이지네이션 방식과 커서 방식 두개 중 모바일의 경우 커서 방식, 웹의 경우 페이지열 제공을 위한 페이지네이션 방식으로 처리를 진행할 것 같습니다.
 
 ---
 
 ## AI 활용 범위
 
-**사용 도구:** Claude.ai
+**사용 도구:** Claude.ai(skill : superpower)
 
 ### 코드 스펙 검사 및 예외 발생 가능 구간 분석
 
