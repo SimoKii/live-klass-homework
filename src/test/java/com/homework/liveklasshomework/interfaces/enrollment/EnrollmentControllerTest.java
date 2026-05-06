@@ -260,4 +260,25 @@ class EnrollmentControllerTest {
         mockMvc.perform(get("/api/v1/enrollments/me"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void 수강_신청_시_X_User_Id_가_음수이면_예외_발생() throws Exception {
+        mockMvc.perform(post("/api/v1/classes/1/enrollments")
+                        .header("X-User-Id", -1L))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 결제_확정_시_X_User_Id_가_음수이면_예외_발생() throws Exception {
+        mockMvc.perform(patch("/api/v1/enrollments/1/confirm")
+                        .header("X-User-Id", -1L))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 수강_취소_시_X_User_Id_가_음수이면_예외_발생() throws Exception {
+        mockMvc.perform(patch("/api/v1/enrollments/1/cancel")
+                        .header("X-User-Id", -1L))
+                .andExpect(status().isBadRequest());
+    }
 }

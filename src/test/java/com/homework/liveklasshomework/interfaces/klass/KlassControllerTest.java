@@ -346,6 +346,35 @@ class KlassControllerTest {
     }
 
     @Test
+    void 강의_생성_시_X_User_Id_가_음수이면_예외_발생() throws Exception {
+        mockMvc.perform(post("/api/v1/classes")
+                        .header("X-User-Id", -1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "Java 입문",
+                                  "description": "설명",
+                                  "price": 50000,
+                                  "maxCapacity": 30,
+                                  "startDate": "2026-06-01",
+                                  "endDate": "2026-06-30"
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 강의_상태_변경_시_X_User_Id_가_음수이면_예외_발생() throws Exception {
+        final UpdateKlassStatusRequest request = new UpdateKlassStatusRequest(KlassStatus.OPEN);
+
+        mockMvc.perform(patch("/api/v1/classes/1/status")
+                        .header("X-User-Id", -1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void 강의_상세_조회_성공() throws Exception {
         final KlassDetailResult detail = new KlassDetailResult(
                 1L,
