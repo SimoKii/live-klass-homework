@@ -1,3 +1,64 @@
 
 ### 1. health check
 GET http://localhost:8080/health
+
+### 2. 강의 생성
+POST http://localhost:8080/api/v1/classes
+X-User-Id: 1
+Content-Type: application/json
+
+{
+  "title": "Java 입문",
+  "description": "Java 기초부터 배우는 강의",
+  "price": 50000,
+  "maxCapacity": 30,
+  "startDate": "2026-06-01",
+  "endDate": "2026-06-30"
+}
+
+### 3. 강의 목록 전체 조회
+GET http://localhost:8080/api/v1/classes
+
+### 4. 강의 목록 상태 필터 조회 (DRAFT/OPEN/CLOSED)
+GET http://localhost:8080/api/v1/classes?status=OPEN
+
+### 5. 강의 상세 조회
+GET http://localhost:8080/api/v1/classes/1
+
+### 6. 강의 상태 변경 (정상 동작: DRAFT → OPEN)
+PATCH http://localhost:8080/api/v1/classes/1/status
+X-User-Id: 1
+Content-Type: application/json
+
+{
+  "status": "OPEN"
+}
+
+### 7. 강의 상태 변경 (정상 동작: OPEN → CLOSED)
+PATCH http://localhost:8080/api/v1/classes/1/status
+X-User-Id: 1
+Content-Type: application/json
+
+{
+  "status": "CLOSED"
+}
+
+### 8. 수강 신청
+POST http://localhost:8080/api/v1/classes/1/enrollments
+X-User-Id: 200
+
+### 9. 결제 확정
+PATCH http://localhost:8080/api/v1/enrollments/1/confirm
+X-User-Id: 200
+
+### 10. 수강 취소
+PATCH http://localhost:8080/api/v1/enrollments/1/cancel
+X-User-Id: 200
+
+### 11. 내 수강 목록 조회
+GET http://localhost:8080/api/v1/enrollments/me
+X-User-Id: 200
+
+### 12. 내 수강 목록 조회 (페이지네이션)
+GET http://localhost:8080/api/v1/enrollments/me?page=0&size=5
+X-User-Id: 200
