@@ -1,11 +1,11 @@
-package com.homework.liveklasshomework.infrastructure.jpa.enrollment;
+package com.homework.liveklasshomework.application.enrollment;
 
-import com.homework.liveklasshomework.application.enrollment.EnrollmentService;
 import com.homework.liveklasshomework.application.enrollment.dto.EnrollmentCreateCommand;
 import com.homework.liveklasshomework.application.exception.EnrollmentCapacityExceededException;
 import com.homework.liveklasshomework.domain.EnrollmentStatus;
 import com.homework.liveklasshomework.domain.Klass;
 import com.homework.liveklasshomework.domain.KlassStatus;
+import com.homework.liveklasshomework.infrastructure.jpa.enrollment.EnrollmentJpaRepository;
 import com.homework.liveklasshomework.infrastructure.jpa.klass.KlassJpaEntity;
 import com.homework.liveklasshomework.infrastructure.jpa.klass.KlassJpaRepository;
 import org.junit.jupiter.api.AfterEach;
